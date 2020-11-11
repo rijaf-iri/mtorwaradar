@@ -17,4 +17,3 @@ It depends on the Python ARM Radar Toolkit [Py-ART](https://arm-doe.github.io/py
 ```python
 import mtorwaradar
 ```
-https://github.com/rijaf-iri/MeteoRwanda
