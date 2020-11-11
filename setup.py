@@ -1,8 +1,8 @@
 import os
 from setuptools import setup, find_packages
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+# with open("README.md", "r") as fh:
+#     long_description = fh.read()
 
 def read(fname):
     try:
@@ -11,7 +11,8 @@ def read(fname):
     except IOError:
         return ''
 
-requirements = read('requirements.txt').splitlines()
+requirements = read("requirements.txt").splitlines()
+long_description = read("README.md")
 
 setup(
     name="mtorwaradar",
