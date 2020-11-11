@@ -134,13 +134,6 @@ dmypy.json
 !/.gitignore
 !/.gitattributes
 
-MeteoRwanda.ini
-config.py
-run.py
-wsgi.py
-clean_py.sh
-scripts/
-
 **/*.py[cod]
 **/__pycache__/
 
