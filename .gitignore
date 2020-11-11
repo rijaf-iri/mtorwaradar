@@ -136,5 +136,6 @@ dmypy.json
 
 **/*.py[cod]
 **/__pycache__/
-
+mtorwaradar/__pycache__/
+mtorwaradar/*/__pycache__/
 
