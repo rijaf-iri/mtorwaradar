@@ -8,7 +8,7 @@ def read(fname):
     except IOError:
         return ''
 
-requirements = read("requirements.txt").splitlines()
+# requirements = read("requirements.txt").splitlines()
 long_description = read("README.md")
 
 setup(
@@ -27,5 +27,5 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.8",
-    install_requires=requirements,
+    # install_requires=requirements,
 )
