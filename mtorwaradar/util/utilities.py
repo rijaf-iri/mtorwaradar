@@ -1,6 +1,12 @@
 import numpy as np
 import rpy2.robjects as robjects
 
+class ArgumentError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+########
+
 def do_call(what, args = None, kwargs = None):
     if args is None and kwargs is not None:
         return what(**kwargs)

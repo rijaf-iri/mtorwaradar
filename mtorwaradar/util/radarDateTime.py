@@ -2,6 +2,7 @@
 import datetime
 import os
 import re
+from .utilities import ArgumentError
 
 def get_mdv_time(radar):
     t_origin = radar.time['units'].split()
@@ -95,6 +96,29 @@ def mdv_end_time_file(dirMDV, time):
 
     return [tr.strftime("%Y%m%d"), tr.strftime("%H%M%S")]
 
+def mdv_seq_times_files(dirMDV, start_time, end_time, times = "end"):
+    t0 = datetime.datetime.strptime(start_time, '%Y-%m-%d-%H-%M')
+    t1 = datetime.datetime.strptime(end_time, '%Y-%m-%d-%H-%M')
+
+    time_range = t1 - t0
+    nb_seconds = time_range.days * 86400 + time_range.seconds + 300
+    time_list = [t0 + datetime.timedelta(seconds = x) for x in range(0, nb_seconds, 300)]
+    time_list = [x.strftime('%Y-%m-%d-%H-%M') for x in time_list]
+
+    if times == "end":
+        foo = mdv_end_time_file
+    elif times == "nearest":
+        foo = mdv_nearest_time_file
+    else:
+        raise ArgumentError("'times' must be 'end' or 'nearest'")
+
+    mdvdates = [foo(dirMDV, t) for t in time_list]
+    mdvdates = [x for x in mdvdates if x]
+    if len(mdvdates) == 0:
+        mdvdates = None
+
+    return mdvdates
+
 def round_5minutes(time):
     mn = int(time.strftime('%M'))
     divm = mn % 5
@@ -104,4 +128,3 @@ def round_5minutes(time):
     daty = daty + '-' + str(mn)
 
     return datetime.datetime.strptime(daty, '%Y-%m-%d-%H-%M')
-
