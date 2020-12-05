@@ -92,6 +92,7 @@ def mdv_end_time_file(dirMDV, time):
     if len(dt) == 0:
         return None
 
+    dt.sort()
     tr = dt[0]
 
     return [tr.strftime("%Y%m%d"), tr.strftime("%H%M%S")]
