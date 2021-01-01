@@ -42,7 +42,7 @@ def create_cappi_grid(radar, fields=["DBZ_F"], cappi="one_altitude", param_cappi
         'ppi_ranges': float
             Value of the altitude at which the pseudo CAPPI will be created
 
-    Returns:
+    Returns: lon, lat, data
         lon: 1d numpy array
         lat: 1d numpy array
         data: dictionary of the fields containing the data, 2d numpy masked ndarray
@@ -99,7 +99,7 @@ def ppi_ranges_cappi_data(radar, alt_cappi, fields):
     fields: list
         list of fields to be used to compute the qpe
 
-    Returns:
+    Returns: lon, lat, data
         lon: 1d numpy array
         lat: 1d numpy array
         data: dictionary of the fields containing the data, 2d numpy masked ndarray
@@ -199,8 +199,9 @@ def ppi_ranges_cappi_plot(radar, alt_cappi, alt_max=7.5):
     alt_max: float
         The maximum altitude to display on the plot
 
-    Returns:
-        figure and axes
+    Returns: figure, axes
+        figure: figure object of type matplotlib.figure.Figure
+        axes: axes object of type matplotlib.axes._subplots.AxesSubplot
     """
     pcappi = ppi_ranges_cappi(radar, alt_cappi)
     elv_angle = radar.fixed_angle["data"]
