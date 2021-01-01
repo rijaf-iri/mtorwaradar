@@ -24,24 +24,21 @@ def create_cappi_grid(radar, fields=["DBZ_F"], cappi="one_altitude", param_cappi
     fields: list
         list of fields to be used to compute the qpe
     cappi: string
-        Method used to create the CAPPI, available options
+        Method used to create the CAPPI, available options are
         'one_altitude': create CAPPI by interpolating the radar polar at a given altitude
-        'alt_maximum': create CAPPI by taking the maximum between 2 altitudes
-                       after converting the radar polar to a regular grid
-        'alt_average': create CAPPI by computing the average between 2 altitudes
-                       after converting the radar polar to a regular grid
-        'alt_median': create CAPPI by computing the median between 2 altitudes
-                      after converting the radar polar to a regular grid
+        'composite_altitude': create CAPPI by computing the maximum, average or median
+                              between 2 given altitudes after converting the radar polar to a regular grid
         'ppi_ranges': create a pseudo CAPPI at a given altitude by using each elevation angle
                       at a particular distance from the radar
     param_cappi:
         Parameters to be used to compute the CAPPI
         'one_altitude': float
             Value of the altitude at which the CAPPI will be created
-        'alt_maximum', 'alt_average' and 'alt_median': dictionary
-            A dictionary with keys 'min_alt' and 'max_alt' representing
-            the minimum and maximum of the altitude to be used to create the CAPPI
-            example: {'min_alt': 1.7, 'max_alt': 15.}
+        'composite_altitude': dictionary
+            A dictionary with keys 'fun', 'min_alt' and 'max_alt' representing the function,
+            the minimum and maximum of the altitude (in km) to be used to create the CAPPI.
+            The available options for 'fun' are: 'maximum', 'average' and 'median'.
+            Example: param_cappi={'fun': 'maximum', 'min_alt': 1.7, 'max_alt': 15.}
         'ppi_ranges': float
             Value of the altitude at which the pseudo CAPPI will be created
 
@@ -63,7 +60,7 @@ def create_cappi_grid(radar, fields=["DBZ_F"], cappi="one_altitude", param_cappi
 
         data = dict()
         for field in fields:
-            data[field] = grid.fields[field]["data"]
+            data[field] = grid.fields[field]["data"][0, :, :]
     else:
         lev = np.arange(
             param_cappi["min_alt"] * 1000, param_cappi["max_alt"] * 1000, 500
@@ -78,14 +75,16 @@ def create_cappi_grid(radar, fields=["DBZ_F"], cappi="one_altitude", param_cappi
 
         data = dict()
         for field in fields:
-            if cappi == "alt_maximum":
-                foo = np.amax
-            if cappi == "alt_average":
-                foo = np.nanmean
-            if cappi == "alt_median":
-                foo = np.nanmedian
+            if param_cappi["fun"] == "maximum":
+                fun = np.amax
+            elif param_cappi["fun"] == "average":
+                fun = np.nanmean
+            elif param_cappi["fun"] == "median":
+                fun = np.nanmedian
+            else:
+                fun = np.amax
 
-            data[field] = foo(grid.fields[field]["data"], axis=0)
+            data[field] = fun(grid.fields[field]["data"], axis=0)
 
     return lon, lat, data
 
