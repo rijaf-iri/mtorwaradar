@@ -21,8 +21,10 @@ def rate_zh(radar, dbz_field = 'DBZ_F',
     dbz = np.ma.masked_invalid(dbz)
 
     dbz_thres = str2numeric_dict_args(dbz_thres)
-    dbz[dbz > dbz_thres['max_dbz']] = dbz_thres['max_dbz']
     dbz = np.ma.masked_where(dbz < dbz_thres['min_dbz'], dbz)
+    dbz = dbz.filled(-999.)
+    dbz[dbz > dbz_thres['max_dbz']] = dbz_thres['max_dbz']
+    dbz = np.ma.masked_where(dbz == -999., dbz)
 
     coef = dict((k, float(v) if type(v) is str else v) for k, v in coef.items())
     rt = do_call(rr_zh, args = [dbz], kwargs = coef)
@@ -45,8 +47,10 @@ def rate_zpoly(radar, dbz_field = 'DBZ_F',
     dbz = np.ma.masked_invalid(dbz)
 
     dbz_thres = str2numeric_dict_args(dbz_thres)
-    dbz[dbz > dbz_thres['max_dbz']] = dbz_thres['max_dbz']
     dbz = np.ma.masked_where(dbz < dbz_thres['min_dbz'], dbz)
+    dbz = dbz.filled(-999.)
+    dbz[dbz > dbz_thres['max_dbz']] = dbz_thres['max_dbz']
+    dbz = np.ma.masked_where(dbz == -999., dbz)
 
     rt = rr_zpoly(dbz)
     rt = np.ma.masked_where(rt < 0.1, rt)
@@ -74,8 +78,10 @@ def rate_z_zdr(radar, dbz_field = 'DBZ_F', zdr_field = 'ZDR_F',
     zdr = np.ma.masked_invalid(zdr)
 
     dbz_thres = str2numeric_dict_args(dbz_thres)
-    dbz[dbz > dbz_thres['max_dbz']] = dbz_thres['max_dbz']
     dbz = np.ma.masked_where(dbz < dbz_thres['min_dbz'], dbz)
+    dbz = dbz.filled(-999.)
+    dbz[dbz > dbz_thres['max_dbz']] = dbz_thres['max_dbz']
+    dbz = np.ma.masked_where(dbz == -999., dbz)
 
     coef = dict((k, float(v) if type(v) is str else v) for k, v in coef.items())
     rt = do_call(rr_z_zdr, args = [dbz, zdr], kwargs = coef)
