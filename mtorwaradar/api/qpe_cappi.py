@@ -51,7 +51,7 @@ def computeCAPPIQPE(dirDate, pars):
     if pars["qpe"]["method"] in ["RATE_Z", "RATE_ZPOLY", "RATE_Z_ZDR"]:
         data = maskDBZthres(data, pars["dbz_thres"])
 
-    qpe = computeQPE(data, pars_qpe)
+    qpe = computeQPE(data, pars["qpe"])
 
     return {"lon": rlon, "lat": rlat, "time": rtime, "qpe": qpe}
 
