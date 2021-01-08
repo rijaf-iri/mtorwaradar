@@ -110,7 +110,7 @@ def computeQPE(data, pars_qpe):
         "precip": {
             "name": "precip",
             "long_name": "Precipitation accumulation",
-            "unit": "mm/hr",
+            "unit": "mm",
             "data": precip_accumul,
         },
     }
