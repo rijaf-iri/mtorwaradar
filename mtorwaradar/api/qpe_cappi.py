@@ -34,6 +34,8 @@ def computeCAPPIQPE(dirDate, pars):
     """
     fields = getFieldsToUse(pars)
     radar = readRadarPolar(dirDate, pars['time'], fields)
+    if radar is None:
+        return {}
 
     if bool(pars["filter"]):
         radar = applyFilter(radar, pars["filter"])
