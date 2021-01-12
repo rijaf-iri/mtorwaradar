@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import datetime
 from dateutil import tz
 from netCDF4 import Dataset as ncdf
