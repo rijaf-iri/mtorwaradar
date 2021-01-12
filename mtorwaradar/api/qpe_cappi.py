@@ -11,7 +11,10 @@ from ..qpe import rain_rate
 from ..util.utilities import do_call
 
 
-def computeCAPPIQPE(dirDate, time, pars):
+# def computeCAPPIQPE(dirDate, time, pars):
+
+
+def compute_cappi_qpe(dirDate, time, pars):
     """
     Compute QPE
 
