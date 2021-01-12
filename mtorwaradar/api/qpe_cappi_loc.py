@@ -207,6 +207,9 @@ def computeCAPPIQPE(
         }
 
         data = compute_cappi_qpe(dirMdvDate, time, pars)
+        if not bool(data):
+            print("No data, time:" + time + time_zone)
+            continue
 
         # open a netCDF file to write
         out_ncfile = os.path.join(dirOUT, "precip_" + data["time"]["format"] + ".nc")
