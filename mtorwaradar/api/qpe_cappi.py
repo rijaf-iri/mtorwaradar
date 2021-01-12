@@ -11,7 +11,7 @@ from ..qpe import rain_rate
 from ..util.utilities import do_call
 
 
-def computeCAPPIQPE(dirDate, pars):
+def computeCAPPIQPE(dirDate, time, pars):
     """
     Compute QPE
 
@@ -21,6 +21,8 @@ def computeCAPPIQPE(dirDate, pars):
     ----------
     dirDate: string
         full path to the directory of the folders (in the form of date yyyymmdd) containing the MDV files
+    time: string
+        the approximate time of the mdv file to use, format "yyyy-mm-dd-HH-MM"
     pars: dictionary
         dictionary of the arguments
 
@@ -33,14 +35,15 @@ def computeCAPPIQPE(dirDate, pars):
         qpe: dictionary of the precipitation rate and accumulation over 5 minutes
     """
     fields = getFieldsToUse(pars)
-    radar = readRadarPolar(dirDate, pars['time'], fields)
+    # radar = readRadarPolar(dirDate, pars['time'], fields)
+    radar = readRadarPolar(dirDate, time, fields)
     if radar is None:
         return {}
 
     if bool(pars["filter"]):
         radar = applyFilter(radar, pars["filter"])
 
-    if bool(pars["filter"]):
+    if bool(pars["pia"]):
         if pars["qpe"]["method"] in ["RATE_Z", "RATE_ZPOLY", "RATE_Z_ZDR"]:
             radar = correctAttenuation(radar, pars["pia"])
 
@@ -48,7 +51,7 @@ def computeCAPPIQPE(dirDate, pars):
         radar = applyCMD(radar)
 
     rlon, rlat, data = createCAPPI(radar, pars["cappi"])
-    rtime = ncoutTimeInfo(radar)
+    rtime = ncoutTimeInfo(radar, pars["time_zone"])
 
     if pars["qpe"]["method"] in ["RATE_Z", "RATE_ZPOLY", "RATE_Z_ZDR"]:
         data = maskDBZthres(data, pars["dbz_thres"])
@@ -287,11 +290,12 @@ def applyCMD(radar):
     return radar
 
 
-def ncoutTimeInfo(radar):
+def ncoutTimeInfo(radar, time_zone):
     last_scan_time = polar_mdv_last_time(radar)
     last_scan_time = datetime.datetime.strptime(last_scan_time, "%Y-%m-%d %H:%M:%S UTC")
     last_scan_time = last_scan_time.replace(tzinfo=tz.gettz("UTC"))
-    last_scan_time = last_scan_time.astimezone(tz.gettz("Africa/Kigali"))
+    if time_zone != "UTC":
+        last_scan_time = last_scan_time.astimezone(tz.gettz(time_zone))
     time_format = last_scan_time.strftime("%Y%m%d%H%M%S")
     time_numeric = last_scan_time.timestamp()
     time_unit = "seconds since 1970-01-01 00:00:00"
