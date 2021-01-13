@@ -164,7 +164,7 @@ def extract_polar_data(
                 p_lat = p_lat + [lat.flatten()[ixy]]
                 p_alt = p_alt + [alt.flatten()[ixy]]
                 for field in fields:
-                    v_field = fill_fields[field].flatten()[ixy]
+                    v_field = fill_fields[field][sweep_slice].flatten()[ixy]
                     p_fields[field] = p_fields[field] + [v_field]
 
             s_lon = s_lon + [p_lon]
