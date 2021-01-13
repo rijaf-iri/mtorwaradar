@@ -85,10 +85,9 @@ def extract_polar_data(dirMDV, source,
     for time in seqTime:
         radar0 = readRadarPolar(dirDate, time, None)
         if radar0 is not None:
-            print(time)
             break
 
-    if radar0 not None:
+    if radar0 is None:
         return {}
 
     if type(sweeps) is not list: 
