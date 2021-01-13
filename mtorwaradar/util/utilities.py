@@ -132,5 +132,5 @@ def ts_float32(val):
 
 def write_to_json(dict_data, file):
     file_json = open(file, "w")
-    data_json = json.dumps(out_dict, indent=2, default=ts_float32)
+    data_json = json.dumps(dict_data, indent=2, default=ts_float32)
     print(data_json, file=file_json)
