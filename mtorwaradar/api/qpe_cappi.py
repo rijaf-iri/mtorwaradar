@@ -1,5 +1,6 @@
 import numpy as np
-from .radar_polar import *
+from .radar_polar_qpe import *
+from .radar_polar_data import *
 from ..qpe.create_cappi import create_cappi_grid
 from ..qpe import rain_rate
 from ..util.utilities import do_call
@@ -34,17 +35,17 @@ def compute_cappi_qpe(dirDate, time, pars):
         return {}
 
     if bool(pars["filter"]):
-        radar = applyFilter(radar, pars["filter"])
+        radar = applyFilterQPE(radar, pars["filter"])
 
     if bool(pars["pia"]):
         if pars["qpe"]["method"] in ["RATE_Z", "RATE_ZPOLY", "RATE_Z_ZDR"]:
-            radar = correctAttenuation(radar, pars["pia"])
+            radar = correctAttenuationQPE(radar, pars["pia"])
 
     if pars["apply_cmd"]:
-        radar = applyCMD(radar)
+        radar = applyCMDQPE(radar)
 
     rlon, rlat, data = createCAPPI(radar, pars["cappi"])
-    rtime = ncoutTimeInfo(radar, pars["time_zone"])
+    rtime = radarPolarTimeInfo(radar, pars["time_zone"])
 
     if pars["qpe"]["method"] in ["RATE_Z", "RATE_ZPOLY", "RATE_Z_ZDR"]:
         data = maskDBZthres(data, pars["dbz_thres"])
