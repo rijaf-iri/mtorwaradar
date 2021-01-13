@@ -1,4 +1,3 @@
-
 import os
 import numpy as np
 import datetime
@@ -7,13 +6,21 @@ from dateutil import tz
 from .radar_polar_data import *
 
 
-def extract_polar_data(dirMDV, source,
-                        start_time, end_time,
-                        fields, points, sweeps = -1,
-                        pia = None, dbz_fields = None,
-                        filter = None, filter_fields = None,
-                        time_zone = "Africa/Kigali"
-                        ):
+def extract_polar_data(
+    dirMDV,
+    source,
+    start_time,
+    end_time,
+    fields,
+    points,
+    sweeps=-1,
+    pia=None,
+    dbz_fields=None,
+    filter=None,
+    filter_fields=None,
+    apply_cmd=False,
+    time_zone="Africa/Kigali",
+):
     """
     Extract radar polar data over a given points.
 
@@ -45,6 +52,8 @@ def extract_polar_data(dirMDV, source,
         Default None, no filter applied.
     filter_fields: list or None
         List of fields in which the filter will be applied. Must be in "fields". Default None
+    apply_cmd: boolean
+        Apply clutter mitigation decision to the fields
     time_zone: string
         The time zone of "start_time", "end_time" and the output extracted data.
         Options: "Africa/Kigali" or "UTC". Default "Africa/Kigali"
@@ -90,44 +99,44 @@ def extract_polar_data(dirMDV, source,
     if radar0 is None:
         return {}
 
-    if type(sweeps) is not list: 
+    if type(sweeps) is not list:
         if sweeps == -1:
             sweeps = list(range(radar0.nsweeps))
         else:
             sweeps = [sweeps]
 
     ext_data = dict()
-    ext_data['coords'] = points
-    ext_data['elevation_angle'] = radar0.fixed_angle['data'][sweeps].tolist()
-    ext_data['date'] = list()
-    ext_data['data'] = dict()
-    ext_data['data']['longitude'] = list()
-    ext_data['data']['latitude'] = list()
-    ext_data['data']['altitude'] = list()
+    ext_data["coords"] = points
+    ext_data["elevation_angle"] = radar0.fixed_angle["data"][sweeps].tolist()
+    ext_data["date"] = list()
+    ext_data["data"] = dict()
+    ext_data["data"]["longitude"] = list()
+    ext_data["data"]["latitude"] = list()
+    ext_data["data"]["altitude"] = list()
     for field in fields:
-        ext_data['data'][field] = list()
+        ext_data["data"][field] = list()
 
+    fields_pars = getFieldsPiaFilterCmd(pia, filter, apply_cmd)
+    fields_read = fields + fields_pars
+    fields_read = list(dict.fromkeys(fields_read))
 
     for time in seqTime:
-        ## get files for pia, filter, cmd 
-
-        radar = readRadarPolar(dirDate, time, fields)
+        radar = readRadarPolar(dirDate, time, fields_read)
         if radar is None:
             continue
 
-        ############
+        if bool(filter) & bool(filter_fields):
+            radar = applyFilter(radar, filter, filter_fields)
 
-        ## pia, filter, cmd
+        if bool(pia) & bool(dbz_fields):
+            radar = correctAttenuation(radar, pia, dbz_fields)
 
-        # if bool(pars["filter"]):
-        #     radar = applyFilter(radar, pars["filter"])
-
-
-        ############
+        if apply_cmd:
+            radar = applyCMD(radar, fields)
 
         fill_fields = dict()
         for field in fields:
-            v_field = radar.fields[field]['data']
+            v_field = radar.fields[field]["data"]
             fill_fields[field] = v_field.filled(np.nan)
 
         s_lon = list()
@@ -139,7 +148,7 @@ def extract_polar_data(dirMDV, source,
 
         for swp in sweeps:
             sweep_slice = radar.get_slice(swp)
-            lat, lon, alt = radar.get_gate_lat_lon_alt(swp, filter_transitions = True)
+            lat, lon, alt = radar.get_gate_lat_lon_alt(swp, filter_transitions=True)
 
             p_lon = list()
             p_lat = list()
@@ -165,14 +174,13 @@ def extract_polar_data(dirMDV, source,
             for field in fields:
                 s_fields[field] = s_fields[field] + [p_fields[field]]
 
-        ext_data['data']['longitude'] = ext_data['data']['longitude'] + [s_lon]
-        ext_data['data']['latitude'] = ext_data['data']['latitude'] + [s_lat]
-        ext_data['data']['altitude'] = ext_data['data']['altitude'] + [s_alt]
+        ext_data["data"]["longitude"] = ext_data["data"]["longitude"] + [s_lon]
+        ext_data["data"]["latitude"] = ext_data["data"]["latitude"] + [s_lat]
+        ext_data["data"]["altitude"] = ext_data["data"]["altitude"] + [s_alt]
         for field in fields:
-            ext_data['data'][field] = ext_data['data'][field] + [s_fields[field]]
+            ext_data["data"][field] = ext_data["data"][field] + [s_fields[field]]
 
         temps = radarPolarTimeInfo(radar, time_zone)
-        ext_data['date'] = ext_data['date'] + [temps['format']]
+        ext_data["date"] = ext_data["date"] + [temps["format"]]
 
     return ext_data
-
