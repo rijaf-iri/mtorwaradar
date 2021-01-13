@@ -1,4 +1,5 @@
 import numpy as np
+import json
 import rpy2.robjects as robjects
 from functools import singledispatch
 
@@ -124,3 +125,12 @@ def to_serializable(val):
 def ts_float32(val):
     """Used if *val* is an instance of numpy.float32."""
     return np.float64(val)
+
+
+########
+
+
+def write_to_json(dict_data, file):
+    file_json = open(file, "w")
+    data_json = json.dumps(out_dict, indent=2, default=ts_float32)
+    print(data_json, file=file_json)

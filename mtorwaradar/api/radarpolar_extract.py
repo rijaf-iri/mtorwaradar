@@ -136,7 +136,7 @@ def extract_polar_data(
         fill_fields = dict()
         for field in fields:
             v_field = radar.fields[field]["data"]
-            fill_fields[field] = v_field.filled(np.nan)
+            fill_fields[field] = v_field.filled(-9999)
 
         s_lon = list()
         s_lat = list()
