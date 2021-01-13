@@ -2,8 +2,7 @@ import os
 import numpy as np
 import datetime
 from dateutil import tz
-
-from .radar_polar_data import *
+from .radarpolar_data import *
 
 
 def extract_polar_data(
@@ -53,7 +52,7 @@ def extract_polar_data(
     filter_fields: list or None
         List of fields in which the filter will be applied. Must be in "fields". Default None
     apply_cmd: boolean
-        Apply clutter mitigation decision to the fields
+        Apply clutter mitigation decision to the fields. Default False
     time_zone: string
         The time zone of "start_time", "end_time" and the output extracted data.
         Options: "Africa/Kigali" or "UTC". Default "Africa/Kigali"
@@ -170,7 +169,7 @@ def extract_polar_data(
 
             s_lon = s_lon + [p_lon]
             s_lat = s_lat + [p_lat]
-            s_alt = s_alt + [p_lat]
+            s_alt = s_alt + [p_alt]
             for field in fields:
                 s_fields[field] = s_fields[field] + [p_fields[field]]
 
