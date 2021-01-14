@@ -28,6 +28,9 @@ def readRadarPolar(dirRadar, time, fields="all"):
 
     """
     mdvtime = mdv_end_time_file(dirRadar, time)
+    if mdvtime is None:
+        return None
+
     mdvfile = os.path.join(dirRadar, mdvtime[0], mdvtime[1] + ".mdv")
     radar = radarPolar(mdvfile, fields)
     return radar

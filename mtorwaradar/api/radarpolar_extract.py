@@ -91,11 +91,15 @@ def extract_polar_data(
     #####
     radar0 = None
     for time in seqTime:
-        radar0 = readRadarPolar(dirDate, time, None)
+        radar0 = readRadarPolar(dirDate, time)
         if radar0 is not None:
             break
 
     if radar0 is None:
+        return {}
+
+    fields = [f for f in fields if f in list(radar0.fields.keys())]
+    if len(fields) == 0:
         return {}
 
     if type(sweeps) is not list:
@@ -103,6 +107,13 @@ def extract_polar_data(
             sweeps = list(range(radar0.nsweeps))
         else:
             sweeps = [sweeps]
+
+    max_ns = radar0.nsweeps - 1
+    if max(sweeps) > max_ns:
+        sweeps = [s for s in sweeps if not s > max_ns]
+
+    if len(sweeps) == 0:
+        return {}
 
     ext_data = dict()
     ext_data["coords"] = points
