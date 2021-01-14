@@ -185,3 +185,37 @@ def extractRadarPolar(
         apply_cmd=apply_cmd,
         time_zone=time_zone,
     )
+
+
+def polarExtractedTable(x):
+    """
+    Convert to table extracted radar polar data.
+
+    Parameters
+    ----------
+    x: dictionary
+        Output from extractRadarPolar
+    Returns
+    -------
+    A list of dictionaries
+    """
+    var = list(x['data'].keys())
+
+    out = list()
+    for p in range(len(x['coords'])):
+        for e in range(len(x['elevation_angle'])):
+            for d in range(len(x['date'])):
+                pt = x['coords'][p]
+                tab = {'points_id': pt['id'],
+                    'points_longitude': pt['longitude'],
+                    'points_latitud': pt['latitude'],
+                    'dates': x['date'][d],
+                    'elevation_angle': x['elevation_angle'][e]
+                 }
+                for v in var:
+                    tab[v] = x['data'][v][d][e][p]
+                out = out + [tab]
+
+    return out
+
+

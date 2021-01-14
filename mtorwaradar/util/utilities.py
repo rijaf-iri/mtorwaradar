@@ -2,6 +2,7 @@ import numpy as np
 import json
 import rpy2.robjects as robjects
 from functools import singledispatch
+import csv
 
 
 class ArgumentError(Exception):
@@ -134,3 +135,21 @@ def write_to_json(dict_data, file):
     file_json = open(file, "w")
     data_json = json.dumps(dict_data, indent=2, default=ts_float32)
     print(data_json, file=file_json)
+
+
+def write_to_csv(x, file):
+    """
+    Write to a csv file
+
+    Parameters
+    ----------
+    x: list of dictionaries
+        format [{'a': 1, 'b':2}, {...}, ...]
+
+    """
+    with open(file, mode="w") as fl:
+        colnames = list(x[0].keys())
+        writer = csv.DictWriter(fl, fieldnames=colnames)
+        writer.writeheader()
+        for d in x:
+            writer.writerow(d)
