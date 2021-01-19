@@ -32,7 +32,7 @@ def extractRadarPolar(
         A list of the dictionary of the points to extract, format
         [{"id": "id_point1", "longitude": value_lon, "latitude": value_lat}, {...}, ...]
     sweeps: integer or list of integer
-        A list of the elevation angles to be extracted in integer, or -1 to extract all available elevation angles
+        A list of the index of elevation angles to be extracted in integer, or -1 to extract all available elevation angles
     pia: dictionary or None
         Dictionary of the method and parameters to use to perform an attenuation correction
         for the reflectivity fields before extraction.
@@ -199,23 +199,22 @@ def polarExtractedTable(x):
     -------
     A list of dictionaries
     """
-    var = list(x['data'].keys())
+    var = list(x["data"].keys())
 
     out = list()
-    for p in range(len(x['coords'])):
-        for e in range(len(x['elevation_angle'])):
-            for d in range(len(x['date'])):
-                pt = x['coords'][p]
-                tab = {'points_id': pt['id'],
-                    'points_longitude': pt['longitude'],
-                    'points_latitud': pt['latitude'],
-                    'dates': x['date'][d],
-                    'elevation_angle': x['elevation_angle'][e]
-                 }
+    for p in range(len(x["coords"])):
+        for e in range(len(x["elevation_angle"])):
+            for d in range(len(x["date"])):
+                pt = x["coords"][p]
+                tab = {
+                    "points_id": pt["id"],
+                    "points_longitude": pt["longitude"],
+                    "points_latitude": pt["latitude"],
+                    "dates": x["date"][d],
+                    "elevation_angle": x["elevation_angle"][e],
+                }
                 for v in var:
-                    tab[v] = x['data'][v][d][e][p]
+                    tab[v] = x["data"][v][d][e][p]
                 out = out + [tab]
 
     return out
-
-

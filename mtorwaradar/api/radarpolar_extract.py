@@ -39,7 +39,7 @@ def extract_polar_data(
         A list of the dictionary of the points to extract, format
         [{"id": "id_point1", "longitude": value_lon, "latitude": value_lat}, {...}, ...]
     sweeps: integer or list of integer
-        A list of the elevation angles to be extracted in integer, or -1 to extract all available elevation angles
+        A list of the index of elevation angles to be extracted in integer, or -1 to extract all available elevation angles
     pia: dictionary or None
         Dictionary of the method and parameters to use to perform an attenuation correction
         for the reflectivity fields before extraction.
