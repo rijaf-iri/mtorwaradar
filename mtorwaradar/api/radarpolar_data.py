@@ -103,9 +103,10 @@ def correctAttenuation(radar, pars_pia, dbz_fields):
     pia_args["pia_field"] = pars_pia["method"]
     pia_args[pars_pia["method"]] = pars_pia["pars"]
 
-    ## for pia using KDP, kdp_field = 'KDP_F'
+    pia = calculate_pia_dict_args(radar, pia_args)
+    pia = np.ma.masked_invalid(pia)
+
     for field in dbz_fields:
-        pia = calculate_pia_dict_args(radar, pia_args, dbz_field = field)
         radar.fields[field]["data"] = radar.fields[field]["data"] + pia
 
     return radar

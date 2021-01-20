@@ -44,7 +44,7 @@ def compute_cappi_qpe(dirDate, time, pars):
     if pars["apply_cmd"]:
         radar = applyCMDQPE(radar)
 
-    rlon, rlat, data = createCAPPI(radar, pars["cappi"])
+    rlon, rlat, data = createCAPPIQPE(radar, pars["cappi"])
     rtime = radarPolarTimeInfo(radar, pars["time_zone"])
 
     if pars["qpe"]["method"] in ["RATE_Z", "RATE_ZPOLY", "RATE_Z_ZDR"]:
@@ -115,7 +115,7 @@ def computeQPE(data, pars_qpe):
     return qpe
 
 
-def createCAPPI(radar, pars_cappi):
+def createCAPPIQPE(radar, pars_cappi):
     """
     pars_cappi = {
                 'method': 'ppi_ranges',
