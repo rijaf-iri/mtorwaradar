@@ -67,7 +67,7 @@ def create_cappi_grid(radar, fields=["DBZ_F"], cappi="one_altitude", param_cappi
         )
         grid_shape = (len(lev), 800, 800)
         z_lim = (lev[0], lev[len(lev) - 1])
-        constant_roi = 1500.0
+        constant_roi = 2000.0
         grid = create_grid_from_radar(
             radar, fields, grid_shape=grid_shape, z_lim=z_lim, constant_roi=constant_roi
         )
