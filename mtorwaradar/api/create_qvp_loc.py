@@ -1,4 +1,4 @@
-# import numpy as np
+import numpy as np
 import datetime
 from dateutil import tz
 # import matplotlib.pyplot as plt
@@ -33,3 +33,25 @@ def createQVP(
         out = out + [qvp]
 
     return out
+
+def qvpTable(qpv):
+    tab = list()
+    for q in qvp:
+        dat = q['data']
+        fields = list(dat.keys())
+        for field in fields:
+            dat[field] = dat[field].filled(-9999)
+
+        for j in range(len(q["height"])):
+            x = {
+                "time": q["time"],
+                "elevation_angle": q['elevation'],
+                "height": q["height"][j]
+            }
+            for field in fields:
+                x[field] = dat[field][j]
+
+            tab = tab + [x]
+
+    return tab
+
