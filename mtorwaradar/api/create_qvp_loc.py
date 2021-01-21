@@ -2,7 +2,6 @@ import numpy as np
 import datetime
 from dateutil import tz
 import copy
-import matplotlib.pyplot as plt
 from .create_qvp import create_qvp_data
 
 
@@ -11,7 +10,7 @@ def createQVP(
     start_time,
     end_time,
     fields,
-    desired_angle=15.,
+    desired_angle=15.0,
     time_zone="Africa/Kigali",
 ):
     start = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M")
@@ -36,10 +35,11 @@ def createQVP(
 
     return out
 
+
 def qvpTable(qvp):
     tab = list()
     for q in qvp:
-        dat = copy.copy(q['data'])
+        dat = copy.copy(q["data"])
         fields = list(dat.keys())
         for field in fields:
             tmp = dat[field].filled(-9999)
@@ -48,8 +48,8 @@ def qvpTable(qvp):
         for j in range(len(q["height"])):
             x = {
                 "time": q["time"],
-                "elevation_angle": q['elevation'],
-                "height": q["height"][j]
+                "elevation_angle": q["elevation"],
+                "height": q["height"][j],
             }
             for field in fields:
                 x[field] = dat[field][j]
@@ -58,3 +58,33 @@ def qvpTable(qvp):
 
     return tab
 
+
+def qvpMeshgrid(qvp):
+    time = [q["time"] for q in qvp]
+    time = [datetime.datetime.strptime(x, "%Y%m%d%H%M%S") for x in time]
+    time = np.array(time)
+
+    Z = qvp[0]["height"]
+    dat = copy.copy(qvp[0]["data"])
+    fields = list(dat.keys())
+    for field in fields:
+        dat[field] = dat[field].filled(-9999.0)
+
+    for tt in range(1, len(qvp)):
+        Z = np.column_stack((Z, qvp[tt]["height"]))
+        tmp = copy.copy(qvp[tt]["data"])
+        for field in fields:
+            tmp[field] = tmp[field].filled(-9999.0)
+            dat[field] = np.column_stack((dat[field], tmp[field]))
+
+    for field in fields:
+        dat[field] = np.ma.masked_where(dat[field] == -9999.0, dat[field])
+
+    T, _ = np.meshgrid(time, Z[:, 0])
+    Z = Z / 1000
+
+    out = {"time": T, "height": Z}
+    for field in fields:
+        out[field] = dat[field]
+
+    return out
