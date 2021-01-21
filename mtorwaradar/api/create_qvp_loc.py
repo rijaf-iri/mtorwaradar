@@ -1,7 +1,8 @@
 import numpy as np
 import datetime
 from dateutil import tz
-# import matplotlib.pyplot as plt
+import copy
+import matplotlib.pyplot as plt
 from .create_qvp import create_qvp_data
 
 
@@ -37,10 +38,11 @@ def createQVP(
 def qvpTable(qpv):
     tab = list()
     for q in qvp:
-        dat = q['data']
+        dat = copy.copy(q['data'])
         fields = list(dat.keys())
         for field in fields:
-            dat[field] = dat[field].filled(-9999)
+            tmp = dat[field].filled(-9999)
+            dat[field] = tmp
 
         for j in range(len(q["height"])):
             x = {
