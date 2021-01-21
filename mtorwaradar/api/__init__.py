@@ -10,5 +10,9 @@ from . import radargrid_extract
 from . import radargrid_extract_loc
 from . import create_cappi
 from . import create_cappi_loc
+from . import create_vad
+from . import create_vad_loc
+from . import create_qvp
+from . import create_qvp_loc
 
 __all__ = [s for s in dir() if not s.startswith('_')]

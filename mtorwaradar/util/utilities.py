@@ -3,6 +3,8 @@ import json
 import rpy2.robjects as robjects
 from functools import singledispatch
 import csv
+from contextlib import contextmanager
+import sys, os
 
 
 class ArgumentError(Exception):
@@ -127,6 +129,21 @@ def ts_float32(val):
     """Used if *val* is an instance of numpy.float32."""
     return np.float64(val)
 
+
+########
+# https://stackoverflow.com/a/25061573
+## suppress output message
+
+
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, "w") as devnull:
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:
+            yield
+        finally:
+            sys.stdout = old_stdout
 
 ########
 
