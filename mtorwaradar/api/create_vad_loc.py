@@ -35,7 +35,8 @@ def createVAD(
     out = list()
     for time in seqTime:
         vad = create_vad_data(dirMdvDate, None, time, z_want, vel_field, time_zone)
-        out = out + [vad]
+        if bool(vad):
+            out = out + [vad]
 
     return out
 

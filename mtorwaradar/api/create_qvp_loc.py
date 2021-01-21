@@ -31,11 +31,12 @@ def createQVP(
     out = list()
     for time in seqTime:
         qvp = create_qvp_data(dirMdvDate, None, time, fields, desired_angle, time_zone)
-        out = out + [qvp]
+        if bool(qvp):
+            out = out + [qvp]
 
     return out
 
-def qvpTable(qpv):
+def qvpTable(qvp):
     tab = list()
     for q in qvp:
         dat = copy.copy(q['data'])
