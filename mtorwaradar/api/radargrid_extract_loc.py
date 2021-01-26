@@ -31,7 +31,7 @@ def extractRadarGrid(
     levels: integer or list of integer
         A list of the index of altitudes to be extracted in integer, or -1 to extract all available altitude
     padxyz: list
-        list of the padding to apply to each point to extract with order  [longitude, latitude, altitude].
+        list of the padding in number of grid to apply to each point to extract with order  [longitude, latitude, altitude].
         Default [0, 0, 0], no padding applied
     fun_sp: string
         Function to be used for the padding. Options: "mean", "median", "max", "min"
@@ -70,7 +70,7 @@ def gridExtractedTable(x):
     Parameters
     ----------
     x: dictionary
-        Output from extractRadarPolar
+        Output from extractRadarGrid
     Returns
     -------
     A list of dictionaries

@@ -30,7 +30,7 @@ def createVAD(
     #######
     if heights is None:
         heights = [0, 10000, 100]
-    z_want = np.arange(heights[0], heights[1], heights[2])
+    z_want = np.arange(heights[0], heights[1] + 0.001, heights[2])
 
     out = list()
     for time in seqTime:
