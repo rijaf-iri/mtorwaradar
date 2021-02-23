@@ -70,24 +70,10 @@ def extract_polar_vertical(
         return {}
 
     #######
-    x_r = radar0.gate_x["data"]
-    y_r = radar0.gate_y["data"]
-    z_r = radar0.gate_z["data"]
 
     projparams = radar0.projection.copy()
     projparams["lon_0"] = radar0.longitude["data"][0]
     projparams["lat_0"] = radar0.latitude["data"][0]
-    # lon_r, lat_r = pyart.core.cartesian_to_geographic(x_r, y_r, projparams)
-
-    r_coords = rvect.ListVector(
-        {
-            "x": robjects.FloatVector(x_r.flatten()),
-            "y": robjects.FloatVector(y_r.flatten()),
-            "z": robjects.FloatVector(z_r.flatten()),
-            # "lon": robjects.FloatVector(lon_r.flatten()),
-            # "lat": robjects.FloatVector(lat_r.flatten()),
-        }
-    )
 
     #######
 
@@ -95,9 +81,9 @@ def extract_polar_vertical(
         heights = [0, 10000, 500]
     r_heights = np.arange(heights[0], heights[1] + 0.001, heights[2])
 
-    r_x = np.arange(0, x_r.max() + 0.001, 500)
+    r_x = np.arange(0, 249500. + 0.001, 500)
     r_x = np.concatenate((-1 * np.flip(r_x[1:]), r_x))
-    r_y = np.arange(0, y_r.max() + 0.001, 500)
+    r_y = np.arange(0, 249500. + 0.001, 500)
     r_y = np.concatenate((-1 * np.flip(r_y[1:]), r_y))
     r_x, r_y = np.meshgrid(r_x, r_y)
     r_lon, r_lat = pyart.core.cartesian_to_geographic(r_x, r_y, projparams)
@@ -154,6 +140,19 @@ def extract_polar_vertical(
 
         if apply_cmd:
             radar = applyCMD(radar, fields)
+
+        #######
+        x_r = radar.gate_x["data"]
+        y_r = radar.gate_y["data"]
+        z_r = radar.gate_z["data"]
+
+        r_coords = rvect.ListVector(
+            {
+                "x": robjects.FloatVector(x_r.flatten()),
+                "y": robjects.FloatVector(y_r.flatten()),
+                "z": robjects.FloatVector(z_r.flatten()),
+            }
+        )
 
         #####
         r_data = dict()
