@@ -1,5 +1,6 @@
 import os
-from pyart.retrieve import velocity_azimuth_display
+# from pyart.retrieve import velocity_azimuth_display
+from pyart.retrieve import vad_michelson
 from .radarpolar_data import readRadarPolar, radarPolarTimeInfo
 from ..util.utilities import suppress_stdout
 
@@ -15,7 +16,7 @@ def create_vad_data(dirMDV, source, time, z_want, vel_field, time_zone):
         return {}
 
     with suppress_stdout():
-        vad = velocity_azimuth_display(radar, vel_field, z_want)
+        vad = vad_michelson(radar, vel_field, z_want)
 
     infoT = radarPolarTimeInfo(radar, time_zone)
 
